@@ -35,7 +35,7 @@ def calculate_income_tax(income):
     return tax_payable
 
 # Streamlit UI
-st.title("India Income Tax Calculator (2025)")
+st.title("India Income Tax Calculator New Regime (2025)")
 
 salary = st.number_input("Enter your annual salary (in Rs)", min_value=0, step=1000)
 
