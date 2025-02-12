@@ -2,7 +2,8 @@ import streamlit as st
 
 def calculate_income_tax(income):
     """
-    Calculate the income tax based on India's Union Budget 2025 tax slabs.
+    Calculate the income tax based on India's Union Budget 2025 tax slabs,
+    incorporating rebates and marginal relief.
     """
     standard_deduction = 75000  # Standard deduction for salaried individuals
     taxable_income = max(0, income - standard_deduction)  # Apply deduction
@@ -32,6 +33,18 @@ def calculate_income_tax(income):
     cess = tax_payable * 0.04
     tax_payable += cess
 
+    # Apply rebate for taxable income up to Rs 12,00,000
+    if taxable_income <= 1200000:
+        tax_payable = 0.0
+    # Apply marginal relief for taxable income slightly above Rs 12,00,000
+    elif taxable_income <= 1275000:
+        # Calculate tax without rebate
+        tax_without_rebate = tax_payable
+        # Calculate excess income over Rs 12,00,000
+        excess_income = taxable_income - 1200000
+        # Marginal relief ensures tax payable does not exceed excess income
+        tax_payable = min(tax_without_rebate, excess_income)
+
     return tax_payable
 
 # Streamlit UI
@@ -42,7 +55,7 @@ salary = st.number_input("Enter your annual salary (in Rs)", min_value=0, step=1
 if st.button("Calculate Tax"):
     tax = calculate_income_tax(salary)
     taxable_income = max(0, salary - 75000)
-    
+
     st.write("### Tax Details:")
     st.write(f"**Gross Salary:** Rs {salary:.2f}")
     st.write(f"**Standard Deduction:** Rs 75,000.00")
