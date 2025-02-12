@@ -1,7 +1,7 @@
 import streamlit as st
 
 def calculate_income_tax(income):
-  
+ 
     standard_deduction = 75000  # Standard deduction
     taxable_income = max(0, income - standard_deduction)  # Apply deduction
 
@@ -18,7 +18,7 @@ def calculate_income_tax(income):
     tax_payable = 0.0
     previous_limit = 0
 
-
+ 
     for limit, rate in tax_slabs:
         if taxable_income > limit:
             tax_payable += (limit - previous_limit) * rate
@@ -30,7 +30,7 @@ def calculate_income_tax(income):
     cess = tax_payable * 0.04  # 4% health & education cess
     tax_payable += cess
 
-
+   
     if taxable_income <= 1200000:
         tax_payable = 0.0
 
@@ -39,9 +39,6 @@ def calculate_income_tax(income):
         excess_income = taxable_income - 1200000
         tax_without_rebate = tax_payable
         tax_payable = min(tax_without_rebate, excess_income)
-
-    # If taxable income exceeds ₹12,75,000, use normal slab-based calculation
-    # (already calculated above, so no further changes needed)
 
     return tax_payable
 
@@ -59,3 +56,12 @@ if st.button("Calculate Tax"):
     st.write(f"**Standard Deduction:** Rs 75,000.00")
     st.write(f"**Taxable Income:** Rs {taxable_income:.2f}")
     st.write(f"**Total Tax Payable:** Rs {tax:.2f}")
+
+st.markdown(
+    """
+    **Disclaimer:** This calculator is for estimation purposes only.  
+    Actual tax calculations may vary based on additional factors such as exemptions, deductions, and government regulations.  
+    It is recommended to consult a tax professional for accurate tax planning and payment.
+    """,
+    unsafe_allow_html=True
+)
