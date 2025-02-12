@@ -1,22 +1,23 @@
 import streamlit as st
 
 def calculate_income_tax(income):
-   
-    standard_deduction = 75000  # Standard deduction for salaried individuals
+  
+    standard_deduction = 75000  # Standard deduction
     taxable_income = max(0, income - standard_deduction)  # Apply deduction
 
     tax_slabs = [
-        (400000, 0.00),   # Up to Rs 4,00,000: 0%
-        (800000, 0.05),   # Rs 4,00,001 to Rs 8,00,000: 5%
-        (1200000, 0.10),  # Rs 8,00,001 to Rs 12,00,000: 10%
-        (1600000, 0.15),  # Rs 12,00,001 to Rs 16,00,000: 15%
-        (2000000, 0.20),  # Rs 16,00,001 to Rs 20,00,000: 20%
-        (2400000, 0.25),  # Rs 20,00,001 to Rs 24,00,000: 25%
-        (float('inf'), 0.30)  # Above Rs 24,00,000: 30%
+        (400000, 0.00),   # Up to ₹4,00,000: 0%
+        (800000, 0.05),   # ₹4,00,001 - ₹8,00,000: 5%
+        (1200000, 0.10),  # ₹8,00,001 - ₹12,00,000: 10%
+        (1600000, 0.15),  # ₹12,00,001 - ₹16,00,000: 15%
+        (2000000, 0.20),  # ₹16,00,001 - ₹20,00,000: 20%
+        (2400000, 0.25),  # ₹20,00,001 - ₹24,00,000: 25%
+        (float('inf'), 0.30)  # Above ₹24,00,000: 30%
     ]
 
     tax_payable = 0.0
     previous_limit = 0
+
 
     for limit, rate in tax_slabs:
         if taxable_income > limit:
@@ -26,20 +27,24 @@ def calculate_income_tax(income):
             tax_payable += (taxable_income - previous_limit) * rate
             break
 
-    cess = tax_payable * 0.04
+    cess = tax_payable * 0.04  # 4% health & education cess
     tax_payable += cess
+
 
     if taxable_income <= 1200000:
         tax_payable = 0.0
+
+   
     elif taxable_income <= 1275000:
-        # Calculate tax without rebate
-        tax_without_rebate = tax_payable
-        # Calculate excess income over Rs 12,00,000
         excess_income = taxable_income - 1200000
-        # Marginal relief ensures tax payable does not exceed excess income
+        tax_without_rebate = tax_payable
         tax_payable = min(tax_without_rebate, excess_income)
 
+    # If taxable income exceeds ₹12,75,000, use normal slab-based calculation
+    # (already calculated above, so no further changes needed)
+
     return tax_payable
+
 
 st.title("India Income Tax Calculator New Regime (2025)")
 
